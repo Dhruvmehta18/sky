@@ -11,7 +11,7 @@
                 type="com.example.sky.ui.signup.SignUpViewModel" />
 
         <variable
-                name="SignUpFormModel"
+                name="signUpFormModel"
                 type="com.example.sky.ui.signup.SignUpViewModel.SignUpFormModel" />
     </data>
 
@@ -49,7 +49,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:text="@={SignUpFormModel.fullName}" />
+                    android:text="@={signUpFormModel.mFullName}"
+                    app:onlyTextError="@{signUpViewModel.fullName}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,7 +72,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:text="@={SignUpFormModel.email}" />
+                    android:text="@={signUpFormModel.mEmail}"
+                    app:emailError="@{signUpViewModel.email}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -96,7 +98,8 @@
                     android:autofillHints=""
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:inputType="textPassword"
-                    android:text="@={SignUpFormModel.password}" />
+                    android:text="@={signUpFormModel.mPassword}"
+                    app:passwordError="@{signUpViewModel.password}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -121,7 +124,8 @@
                     android:imeActionLabel="@string/action_sign_up_short"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:text="@={SignUpFormModel.confirmPassword}" />
+                    android:text="@={signUpFormModel.mConfirmPassword}"
+                    app:confirmPasswordError="@{signUpViewModel.password}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -134,7 +138,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="48dp"
                 android:layout_marginBottom="64dp"
-                android:enabled="false"
+                android:enabled="@{signUpViewModel.signUpFormState.dataValid}"
                 android:text="@string/action_sign_in"
                 android:theme="@style/Theme.LoginTheme"
                 app:layout_constraintBottom_toBottomOf="parent"

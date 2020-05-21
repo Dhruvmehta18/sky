@@ -1,6 +1,9 @@
 package com.example.sky.ui.login
 
 import android.util.Patterns
+import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
+import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +12,13 @@ import com.example.sky.data.LoginRepository
 import com.example.sky.data.Result
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
+
+    private val _email = MutableLiveData<String>()
+    val email: LiveData<String>
+        get() = _email
+    private val _password = MutableLiveData<String>()
+    val password: LiveData<String>
+        get() = _password
 
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState>
@@ -39,10 +49,10 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
         }
     }
 
-    fun loginDataChanged(username: String, password: String) {
-        if (!isValidUsername(username)) {
+    private fun loginDataChanged() {
+        if (!isValidUsername(email.value.orEmpty())) {
             _loginForm.value = LoginFormState(usernameError = R.string.invalid_username)
-        } else if (!isPasswordValid(password)) {
+        } else if (!isPasswordValid(password.value.orEmpty())) {
             _loginForm.value = LoginFormState(passwordError = R.string.invalid_password)
         } else {
             _loginForm.value = LoginFormState(isDataValid = true)
@@ -61,5 +71,42 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
     // A placeholder password validation check
     private fun isPasswordValid(password: String): Boolean {
         return password.length > 8
+    }
+
+    private fun emailDataChanged(email: String) {
+        _email.value = email
+        loginDataChanged()
+    }
+
+    private fun passwordDataChanged(password: String) {
+        _password.value = password
+        loginDataChanged()
+    }
+
+
+    inner class LoginFormModel(
+        private var _mEmail: String,
+        private var _mPassword: String
+    ) : BaseObservable() {
+        init {
+            emailDataChanged(_mEmail)
+            passwordDataChanged(_mPassword)
+        }
+
+        var mEmail: String
+            @Bindable get() = _mEmail
+            set(value) {
+                _mEmail = value
+                notifyPropertyChanged(BR.signUpFormModel)
+                emailDataChanged(value)
+            }
+
+        var mPassword: String
+            @Bindable get() = _mPassword
+            set(password: String) {
+                _mPassword = password
+                notifyPropertyChanged(BR.signUpFormModel)
+                passwordDataChanged(password)
+            }
     }
 }

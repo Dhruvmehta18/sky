@@ -1,8 +1,7 @@
 package com.example.sky.ui.login
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +12,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.example.sky.R
 import com.example.sky.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: FragmentLoginBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,6 +29,13 @@ class LoginFragment : Fragment() {
             ViewModelProvider(this, LoginViewModelFactory()).get(LoginViewModel::class.java)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         binding.loginViewModel = loginViewModel
+        val args = LoginFragmentArgs.fromBundle(requireArguments())
+
+        val email = args.email
+        val password = args.password
+        Log.i("sdsd", "$email $password")
+        Toast.makeText(context, "$email $password", Toast.LENGTH_SHORT).show()
+        binding.loginFormModel = loginViewModel.LoginFormModel(email.orEmpty(), password.orEmpty())
 
         loginViewModel.loginFormState.observe(viewLifecycleOwner, Observer { loginFormState ->
             if (loginFormState == null) {
@@ -55,25 +62,6 @@ class LoginFragment : Fragment() {
                 }
             })
 
-        val afterTextChangedListener = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // ignore
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                // ignore
-            }
-
-            override fun afterTextChanged(s: Editable) {
-
-                loginViewModel.loginDataChanged(
-                    binding.emailLogin.text.toString(),
-                    binding.passwordLogin.text.toString()
-                )
-            }
-        }
-        binding.emailLogin.addTextChangedListener(afterTextChangedListener)
-        binding.passwordLogin.addTextChangedListener(afterTextChangedListener)
         binding.passwordLogin.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 loginViewModel.login(
@@ -91,11 +79,17 @@ class LoginFragment : Fragment() {
                 binding.passwordLogin.text.toString()
             )
         }
-        binding.loginSignUpButton.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_signUpFragment)
-        )
+        binding.loginSignUpButton.setOnClickListener {
+            it.findNavController().navigate(
+                LoginFragmentDirections.actionLoginFragmentToSignUpFragment(
+                    loginViewModel.email.value,
+                    loginViewModel.password.value
+                )
+            )
+        }
         return binding.root
     }
+
 
     private fun updateUiWithUser(model: LoggedInUserView) {
         val welcome = getString(R.string.welcome) + model.displayName

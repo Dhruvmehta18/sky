@@ -1,14 +1,13 @@
 package com.example.sky.ui.signup
 
 import android.util.Log
-import android.util.Patterns
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.sky.R
+import com.example.sky.*
 import com.example.sky.data.LoginRepository
 import com.example.sky.data.Result
 import com.example.sky.ui.login.LoggedInUserView
@@ -26,24 +25,18 @@ class SignUpViewModel(private val loginRepository: LoginRepository) : ViewModel(
     val password: LiveData<String>
         get() = _password
     private val _confirmPassword = MutableLiveData<String>()
-    val confirmPassword: LiveData<String>
+    private val confirmPassword: LiveData<String>
         get() = _confirmPassword
 
-    private val signUpForm = MutableLiveData<SignUpFormState>()
+    private val signUpForm = MutableLiveData<SignUpFormState>().apply {
+        this.value = SignUpFormState(isDataValid = false)
+    }
     val signUpFormState: LiveData<SignUpFormState>
         get() = signUpForm
 
     private val _loginResult = MutableLiveData<LoginResult>()
     val loginResult: LiveData<LoginResult>
         get() = _loginResult
-
-    init {
-        _fullName.value = ""
-        _email.value = ""
-        _password.value = ""
-        _confirmPassword.value = ""
-        signUpForm.value = SignUpFormState()
-    }
 
     fun signUp(fullName: String, email: String, password: String) {
         // can be launched in a separate asynchronous job
@@ -62,96 +55,82 @@ class SignUpViewModel(private val loginRepository: LoginRepository) : ViewModel(
         }
     }
 
-    fun fullNameDataChanged(fullName: String) {
-        if (!isValidFullName(fullName)) {
-            signUpForm.value = SignUpFormState(fullNameError = R.string.invalid_fullName)
-        } else {
-            signUpDataChanged()
-        }
-
-        Log.i("SignUpFragment", fullName)
+    private fun fullNameDataChanged(fullName: String) {
+        _fullName.value = fullName
+        signUpDataChanged()
     }
 
-    fun emailDataChanged(email: String) {
-        if (!isValidEmail(email)) {
-            signUpForm.value = SignUpFormState(emailError = R.string.invalid_email)
-        } else {
-            signUpDataChanged()
-        }
+    private fun emailDataChanged(email: String) {
+        _email.value = email
+        signUpDataChanged()
     }
 
-    fun passwordDataChanged(password: String) {
-        if (!isPasswordValid(password)) {
-            signUpForm.value = SignUpFormState(passwordError = R.string.invalid_password)
-        } else {
-            signUpDataChanged()
-        }
+    private fun passwordDataChanged(password: String) {
+        _password.value = password
+        signUpDataChanged()
     }
 
-    fun confirmPasswordChanged(confirmPassword: String) {
-        if (!isConfirmPasswordValid(password.value, confirmPassword)) {
-            signUpForm.value =
-                SignUpFormState(confirmPasswordError = R.string.invalid_confirm_password)
-        } else {
-            signUpDataChanged()
-        }
+    private fun confirmPasswordDataChanged(confirmPassword: String) {
+        _confirmPassword.value = confirmPassword
+        signUpDataChanged()
     }
 
     private fun signUpDataChanged() {
-        if (isValidFullName(fullName.value) &&
-            isValidEmail(email.value) &&
-            isPasswordValid(password.value) &&
-            isConfirmPasswordValid(password.value, confirmPassword.value)
+        signUpForm.value = SignUpFormState(
+            isDataValid = isValidOnlyText(fullName.value.orEmpty()) &&
+                    isValidEmail(email.value.orEmpty()) &&
+                    isPasswordValid(password.value.orEmpty()) &&
+                    isConfirmPasswordValid(
+                        password.value.orEmpty(),
+                        confirmPassword.value.orEmpty()
+                    )
         )
-            signUpForm.value = SignUpFormState(isDataValid = true)
     }
 
-    private fun isValidFullName(fullName: String?): Boolean {
-        return fullName != null && !fullName.isBlank()
-    }
+    inner class SignUpFormModel(
+        private var _mFullName: String,
+        private var _mEmail: String,
+        private var _mPassword: String,
+        private var _mConfirmPassword: String
+    ) : BaseObservable() {
+        init {
+            fullNameDataChanged(_mFullName)
+            emailDataChanged(_mEmail)
+            passwordDataChanged(_mPassword)
+            confirmPasswordDataChanged(_mConfirmPassword)
+        }
 
-    // A placeholder username validation check
-    private fun isValidEmail(email: String?): Boolean {
-        return email != null && Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    // A placeholder password validation check
-    private fun isPasswordValid(password: String?): Boolean {
-        return password != null && password.length > 8
-    }
-
-    private fun isConfirmPasswordValid(password: String?, confirmPassword: String?): Boolean {
-        return password == confirmPassword
-    }
-
-    inner class SignUpFormModel : BaseObservable() {
-        @get:Bindable
-        var fullName: String = ""
+        var mFullName: String
+            @Bindable get() = _mFullName
             set(value) {
-                field = value
-                notifyPropertyChanged(BR.fullName)
-
+                _mFullName = value
+                notifyPropertyChanged(BR.signUpFormModel)
+                fullNameDataChanged(value)
+                Log.i("SignUpForm", value)
             }
 
-        @get:Bindable
-        var email: String = ""
+        var mEmail: String
+            @Bindable get() = _mEmail
             set(value) {
-                field = value
-                notifyPropertyChanged(BR.email)
+                _mEmail = value
+                notifyPropertyChanged(BR.signUpFormModel)
+                emailDataChanged(value)
             }
 
-        @get:Bindable
-        var password: String = ""
-            set(value) {
-                field = value
-                notifyPropertyChanged(BR.password)
+        var mPassword: String
+            @Bindable get() = _mPassword
+            set(password: String) {
+                _mPassword = password
+                notifyPropertyChanged(BR.signUpFormModel)
+                passwordDataChanged(password)
             }
 
-        @get:Bindable
-        var confirmPassword: String = ""
+        var mConfirmPassword: String
+            @Bindable get() = _mConfirmPassword
             set(value) {
-                field = value
-                notifyPropertyChanged(BR.confirmPassword)
+                _mConfirmPassword = value
+                notifyPropertyChanged(BR.mConfirmPassword)
+                confirmPasswordDataChanged(value)
             }
     }
 }

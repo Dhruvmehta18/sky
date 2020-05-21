@@ -9,6 +9,10 @@
         <variable
                 name="loginViewModel"
                 type="com.example.sky.ui.login.LoginViewModel" />
+
+        <variable
+                name="loginFormModel"
+                type="com.example.sky.ui.login.LoginViewModel.LoginFormModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -44,7 +48,8 @@
                     android:id="@+id/emailLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress" />
+                    android:inputType="textEmailAddress"
+                    android:text="@={loginFormModel.mEmail}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,7 +74,8 @@
                     android:autofillHints=""
                     android:imeActionLabel="@string/action_log_in_short"
                     android:imeOptions="actionDone"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:text="@={loginFormModel.mPassword}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton

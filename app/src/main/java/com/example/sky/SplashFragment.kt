@@ -22,10 +22,20 @@ class SplashFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(layoutInflater, R.layout.fragment_splash, container, false)
         binding.loginButton.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_splashFragment_to_loginFragment)
+            Navigation.createNavigateOnClickListener(
+                SplashFragmentDirections.actionSplashFragmentToLoginFragment(
+                    "",
+                    ""
+                )
+            )
         )
         binding.signupButton.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_splashFragment_to_signUpFragment)
+            Navigation.createNavigateOnClickListener(
+                SplashFragmentDirections.actionSplashFragmentToSignUpFragment(
+                    "",
+                    ""
+                )
+            )
         )
 
         return binding.root

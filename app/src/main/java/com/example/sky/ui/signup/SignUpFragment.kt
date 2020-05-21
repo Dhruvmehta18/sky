@@ -1,6 +1,7 @@
 package com.example.sky.ui.signup
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +12,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.example.sky.R
 import com.example.sky.databinding.FragmentSignUpBinding
 import com.example.sky.ui.login.LoggedInUserView
+import com.example.sky.ui.login.LoginFragmentArgs
 
 class SignUpFragment : Fragment() {
 
@@ -33,26 +35,16 @@ class SignUpFragment : Fragment() {
             SignUpViewModelFactory()
         ).get(SignUpViewModel::class.java)
         binding.signUpViewModel = signUpViewModel
-        signUpViewModel.signUpFormState.observe(viewLifecycleOwner, Observer { signUpFormState ->
-            if (signUpFormState == null) {
-                return@Observer
-            }
-            binding.signUp.isEnabled = signUpFormState.isDataValid
-            signUpFormState.fullNameError?.let {
-                binding.fullNameSignUp.error = getString(it)
-            }
-            signUpFormState.emailError?.let {
-                binding.emailSignUp.error = getString(it)
-            }
-            signUpFormState.passwordError?.let {
-                binding.passwordSignUp.error = getString(it)
-            }
-            signUpFormState.confirmPasswordError?.let {
-                binding.passwordCheckSignUp.error = getString(it)
-            }
 
-        })
-
+        val args = SignUpFragmentArgs.fromBundle(requireArguments())
+        val email = args.email
+        val password = args.password
+        Log.i("sdsd", "$email $password")
+        val args1 = LoginFragmentArgs.fromBundle(requireArguments())
+        Log.i("sdsd", "$args1")
+        Toast.makeText(context, "$email $password", Toast.LENGTH_SHORT).show()
+        binding.signUpFormModel =
+            signUpViewModel.SignUpFormModel("", email.orEmpty(), password.orEmpty(), "")
         signUpViewModel.loginResult.observe(viewLifecycleOwner,
             Observer { loginResult ->
                 loginResult ?: return@Observer
@@ -64,19 +56,6 @@ class SignUpFragment : Fragment() {
                     updateUiWithUser(it)
                 }
             })
-
-        signUpViewModel.fullName.observe(viewLifecycleOwner, Observer { fullName ->
-            signUpViewModel.fullNameDataChanged(fullName)
-        })
-        signUpViewModel.email.observe(viewLifecycleOwner, Observer { email ->
-            signUpViewModel.emailDataChanged(email)
-        })
-        signUpViewModel.password.observe(viewLifecycleOwner, Observer { password ->
-            signUpViewModel.passwordDataChanged(password)
-        })
-        signUpViewModel.confirmPassword.observe(viewLifecycleOwner, Observer { confirmPassword ->
-            signUpViewModel.confirmPasswordChanged(confirmPassword)
-        })
 
         binding.passwordCheckSignUp.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -98,14 +77,14 @@ class SignUpFragment : Fragment() {
             )
         }
 
-        binding.signUpLoginButton.setOnClickListener(
-            Navigation.createNavigateOnClickListener(
+        binding.signUpLoginButton.setOnClickListener {
+            it.findNavController().navigate(
                 SignUpFragmentDirections.actionSignUpFragmentToLoginFragment(
                     signUpViewModel.email.value,
                     signUpViewModel.password.value
                 )
             )
-        )
+        }
         return binding.root
     }
 

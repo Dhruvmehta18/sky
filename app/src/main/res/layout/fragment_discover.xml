@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+                name="discoverSearch"
+                type="com.example.sky.ui.discover.DiscoverViewModel.DiscoverSearchObserver" />
+
+        <variable
+                name="discoverViewModel"
+                type="com.example.sky.ui.discover.DiscoverViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.discover.DiscoverFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:expandedTitleMarginBottom="28dp"
+                    app:expandedTitleMarginStart="72dp">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                        android:id="@+id/toolbar_discover"
+                        style="@style/Theme.ToolBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:title="@string/title_discover">
+
+                    <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="start"
+                            android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                                style="?attr/textAppearanceHeadline5"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="16dp"
+                                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                                android:gravity="start"
+                                android:text="@string/title_discover"
+                                android:textColor="@color/white" />
+
+                        <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="?attr/actionBarSize"
+                                android:layout_marginVertical="@dimen/activity_horizontal_margin"
+                                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                                android:background="@color/white"
+                                android:gravity="center|end">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/searchDiscover"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="?attr/actionBarSize"
+                                    android:autofillHints=""
+                                    android:background="@android:color/transparent"
+                                    android:drawableStart="@drawable/ic_search_black_24dp"
+                                    android:drawableEnd="@drawable/ic_mic_black_24dp"
+                                    android:drawablePadding="@dimen/activity_horizontal_margin"
+                                    android:hint="@string/discover_search"
+                                    android:imeOptions="actionSearch"
+                                    android:inputType="textAutoComplete"
+                                    android:paddingHorizontal="8dp"
+                                    android:text="@={discoverSearch.search}" />
+
+                        </LinearLayout>
+                        <!--                <com.google.android.material.card.MaterialCardView-->
+                        <!--                        android:layout_width="wrap_content"-->
+                        <!--                        android:layout_height="wrap_content">-->
+                        <!--                </com.google.android.material.card.MaterialCardView>-->
+                    </LinearLayout>
+                </com.google.android.material.appbar.MaterialToolbar>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+        <!-- Note: A RecyclerView can also be used -->
+        <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <!-- Scrollable content -->
+            <FrameLayout
+                    android:id="@+id/discoverView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:layout="com.example.sku.ui.discover.DiscoverSearchFragment" />
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

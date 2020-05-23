@@ -97,15 +97,15 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
             @Bindable get() = _mEmail
             set(value) {
                 _mEmail = value
-                notifyPropertyChanged(BR.signUpFormModel)
+                notifyPropertyChanged(BR.loginFormModel)
                 emailDataChanged(value)
             }
 
         var mPassword: String
             @Bindable get() = _mPassword
-            set(password: String) {
+            set(password) {
                 _mPassword = password
-                notifyPropertyChanged(BR.signUpFormModel)
+                notifyPropertyChanged(BR.loginFormModel)
                 passwordDataChanged(password)
             }
     }

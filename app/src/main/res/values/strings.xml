@@ -37,4 +37,14 @@
     <string name="title_favorite">Favorite</string>
     <string name="title_traveller">traveller</string>
     <string name="discover_search">Type a Place</string>
+    <string name="title_discover_search">Discover search</string>
+    <string name="location_access">Location access</string>
+    <string name="location_access_message">This persmission is required for getting more accurate places result according to your current location</string>
+    <string name="accept">ACCEPT</string>
+    <string name="preference_file_key">com.example.sky.SKY_APP_77212</string>
+    <string name="longitude">longitude</string>
+    <string name="latitude">latitude</string>
+    <string name="voice_search">voice search</string>
+    <string name="mic_search_discover_description">Use voice for searching places</string>
+    <string name="predictions_for">show predictions for %s</string>
 </resources>

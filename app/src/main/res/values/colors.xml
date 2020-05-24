@@ -27,4 +27,8 @@
     <color name="error_color">#b00020</color>
     <color name="color_on_error">#ffffff</color>
     <color name="color_on_surface">#ffffff</color>
+
+    <color name="colorPrimaryWhite">#ffffff</color>
+    <color name="colorPrimaryWhiteVariant">#cccccc</color>
+    <color name="colorPrimaryWhiteLightVariant">#E1E2E1</color>
 </resources>

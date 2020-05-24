@@ -69,4 +69,17 @@
             ?attr/colorControlHighlight
         </item>
     </style>
+
+    <style name="Widget.App.Toolbar" parent="Widget.MaterialComponents.Toolbar.Primary">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeStyle">@style/Widget.App.ActionMode</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_close_black_24dp</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Toolbar" parent="">
+        <item name="colorPrimary">@color/colorPrimaryWhite</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryWhiteVariant</item>
+        <item name="colorOnPrimary">@color/colorPrimaryWhiteVariant</item>
+    </style>
 </resources>

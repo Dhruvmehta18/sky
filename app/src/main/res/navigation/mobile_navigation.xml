@@ -15,7 +15,11 @@
             android:id="@+id/navigation_discover"
             android:name="com.example.sky.ui.discover.DiscoverFragment"
             android:label="@string/title_discover"
-            tools:layout="@layout/fragment_discover" />
+            tools:layout="@layout/fragment_discover">
+        <action
+                android:id="@+id/action_navigation_discover_to_navigation_discover_search"
+                app:destination="@id/navigation_discover_search" />
+    </fragment>
 
     <fragment
             android:id="@+id/navigation_traveller"
@@ -27,4 +31,14 @@
             android:name="com.example.sky.ui.favorite.FavoriteFragment"
             android:label="@string/title_favorite"
             tools:layout="@layout/fragment_favorite" />
+    <fragment
+            android:id="@+id/navigation_discover_search"
+            android:name="com.example.sky.ui.discover.DiscoverSearchFragment"
+            android:label="@string/title_discover_search"
+            tools:layout="@layout/fragment_discover_search">
+        <action
+                android:id="@+id/action_navigation_discover_search_to_navigation_discover"
+                app:destination="@id/navigation_discover"
+                app:popUpTo="@id/navigation_discover" />
+    </fragment>
 </navigation>

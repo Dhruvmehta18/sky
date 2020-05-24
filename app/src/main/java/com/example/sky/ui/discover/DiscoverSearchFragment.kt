@@ -1,38 +1,46 @@
 package com.example.sky.ui.discover
 
+import android.app.Activity.RESULT_OK
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.sky.R
-import com.example.sky.ui.discover.model.PlaceContent.PLACES
-import com.example.sky.ui.discover.model.PlaceContent.PlaceItem
+import com.example.sky.databinding.FragmentDiscoverSearchBinding
+import com.google.android.gms.maps.model.LatLng
+
 
 /**
  * A fragment representing a list of Items.
  * Activities containing this fragment MUST implement the
- * [DiscoverSearchFragment.OnListFragmentInteractionListener] interface.
  */
 class DiscoverSearchFragment : Fragment() {
 
+    private val TAG = "DiscoverSearchFragment"
+
     // TODO: Customize parameters
     private var columnCount = 1
-
-    private var listener: OnListFragmentInteractionListener? = null
+    private lateinit var discoverSearchViewModel: DiscoverSearchViewModel
 
     private val discoverSharedViewModel: DiscoverSharedViewModel by activityViewModels()
-    private var places: MutableList<PlaceItem> = ArrayList()
-
-    private lateinit var discoverViewModel: DiscoverViewModel
+    private lateinit var binding: FragmentDiscoverSearchBinding
+    private lateinit var discoverSearchObserver: DiscoverSearchViewModel.DiscoverSearchObserver
+    private val REQUEST_CODE = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,40 +52,92 @@ class DiscoverSearchFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_discover_search_list, container, false)
+    ): View {
 
-        discoverViewModel =
-            ViewModelProvider(this).get(DiscoverViewModel::class.java)
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = DiscoverSearchItemRecyclerViewAdapter(PLACES, listener)
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_discover_search, container, false)
+        discoverSearchViewModel =
+            ViewModelProvider(this, DiscoverSearchViewModelFactory(requireContext())).get(
+                DiscoverSearchViewModel::class.java
+            )
+        setDiscoverSearchText("")
+        binding.lifecycleOwner = this
+        val requireContext = requireContext()
+        // Set up the toolbar.
+        binding.toolbarDiscover.setNavigationOnClickListener(
+            DisocverSearchNavigationIconClickListener(
+                requireContext,
+                AccelerateDecelerateInterpolator(),
+                ContextCompat.getDrawable(
+                    requireContext,
+                    R.drawable.quantum_ic_arrow_back_grey600_24
+                )
+            )
+        ) // Menu close icon
+        binding.micSearchPlaces.setOnClickListener {
+
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+
+            try {
+                //Start the Activity and wait for the response//
+                startActivityForResult(intent, REQUEST_CODE)
+            } catch (a: ActivityNotFoundException) {
             }
         }
-        discoverSharedViewModel.places.observe(viewLifecycleOwner, Observer {
+        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
+        // and once again when the user makes a selection (for example when calling fetchPlace()).
 
+        // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
+        // and once again when the user makes a selection (for example when calling fetchPlace()).
+        // Set the adapter
+        val adapter = DiscoverSearchItemRecyclerViewAdapter(
+            PlaceItemListener({ placeId ->
+                Toast.makeText(requireContext, placeId, Toast.LENGTH_LONG).show()
+            }, { placeName ->
+                Toast.makeText(requireContext, placeName, Toast.LENGTH_LONG).show()
+                setDiscoverSearchText(placeName)
+            })
+        )
+        binding.placesAutocompleteList.layoutManager = when {
+            columnCount <= 1 -> LinearLayoutManager(context)
+            else -> GridLayoutManager(context, columnCount)
+        }
+        val sharedPref = requireContext.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )!!
+        val latitude = sharedPref.getFloat(getString(R.string.latitude), 32f)
+        val longitude = sharedPref.getFloat(getString(R.string.longitude), 32f)
+        discoverSearchViewModel.locationDataChanged(
+            LatLng(
+                latitude.toDouble(),
+                longitude.toDouble()
+            )
+        )
+        binding.placesAutocompleteList.adapter = adapter
+        discoverSearchViewModel.places.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it?.toMutableList())
             Log.i("DiscoverSearch", it.toString())
-            if (view is RecyclerView) {
-                with(view) {
-                    layoutManager = when {
-                        columnCount <= 1 -> LinearLayoutManager(context)
-                        else -> GridLayoutManager(context, columnCount)
-                    }
-                    adapter = DiscoverSearchItemRecyclerViewAdapter(it.toList(), listener)
-                }
-            }
         })
-        return view
+        setHasOptionsMenu(true)
+        return binding.root
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
+    private fun setDiscoverSearchText(query: String) {
+        binding.discoverSearch = discoverSearchViewModel.DiscoverSearchObserver(query)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_CODE -> {
+                if (resultCode == RESULT_OK && null != data) {
+                    val result =
+                        data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                    if (result != null && result.isNotEmpty())
+                        setDiscoverSearchText(result[0])
+                }
+            }
+        }
     }
 
     /**
@@ -91,13 +151,6 @@ class DiscoverSearchFragment : Fragment() {
      * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
      * for more information.
      */
-    interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: PlaceItem?)
-    }
-
-    fun setOnPlaceSelectedListener(context: DiscoverFragment) {
-        listener = context
-    }
 
     companion object {
 
@@ -112,16 +165,5 @@ class DiscoverSearchFragment : Fragment() {
                     putInt(ARG_COLUMN_COUNT, columnCount)
                 }
             }
-    }
-
-    class PlacesDiffCallBack :
-        DiffUtil.ItemCallback<PlaceItem>() {
-        override fun areItemsTheSame(oldItem: PlaceItem, newItem: PlaceItem): Boolean {
-            return oldItem.placeId == newItem.placeId
-        }
-
-        override fun areContentsTheSame(oldItem: PlaceItem, newItem: PlaceItem): Boolean {
-            return oldItem == newItem
-        }
     }
 }

@@ -33,4 +33,10 @@
     <style name="Theme.ToolBar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:background">@drawable/gradient_purple_left</item>
     </style>
+
+    <style name="Widget.App.ActionMode" parent="Widget.AppCompat.ActionMode">
+        <item name="titleTextStyle">?attr/textAppearanceHeadline6</item>
+        <item name="subtitleTextStyle">?attr/textAppearanceSubtitle1</item>
+        <item name="background">@color/quantum_grey600</item>
+    </style>
 </resources>

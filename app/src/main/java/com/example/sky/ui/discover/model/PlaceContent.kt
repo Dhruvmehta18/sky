@@ -16,8 +16,6 @@ object PlaceContent {
 
     val PLACE_MAP: MutableMap<String, PlaceItem> = HashMap()
 
-    private const val COUNT = 5
-
     private fun addItem(item: PlaceItem) {
         PLACES.add(item)
         PLACE_MAP[item.placeId] = item
@@ -34,7 +32,13 @@ object PlaceContent {
 //            Log.i(TAG, prediction.placeId)
 //            Log.i(TAG, prediction.getPrimaryText(null).toString())
 //            Log.i(TAG, prediction.placeTypes.toString())
-            addItem(PlaceItem(prediction.placeId, prediction.getPrimaryText(null).toString()))
+            addItem(
+                PlaceItem(
+                    prediction.placeId,
+                    prediction.getPrimaryText(null).toString(),
+                    prediction.getSecondaryText(null).toString()
+                )
+            )
         }
 
         Log.i("PlaceContent", PLACES.toString())
@@ -43,7 +47,8 @@ object PlaceContent {
 
     data class PlaceItem(
         val placeId: String,
-        val placeName: String
+        val placeName: String,
+        val placeSecondaryText: String
     ) {
         override fun toString(): String = placeName
     }

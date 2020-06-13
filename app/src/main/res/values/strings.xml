@@ -47,4 +47,7 @@
     <string name="voice_search">voice search</string>
     <string name="mic_search_discover_description">Use voice for searching places</string>
     <string name="predictions_for">show predictions for %s</string>
+    <string name="things_to_do">TODO</string>
+    <string name="places">Places</string>
+    <string name="hotel">Hotel</string>
 </resources>

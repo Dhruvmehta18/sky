@@ -23,7 +23,7 @@ class DiscoverSearchViewModel(context: Context) : ViewModel() {
     private var token: AutocompleteSessionToken = AutocompleteSessionToken.newInstance()
     private val _query = MutableLiveData<String>()
     private val TAG = "DiscoverSearchViewModel"
-    private val query: LiveData<String>
+    val query: LiveData<String>
         get() = _query
     private val _places = MutableLiveData<MutableList<PlaceContent.PlaceItem>>()
     val places: LiveData<MutableList<PlaceContent.PlaceItem>>
@@ -59,7 +59,6 @@ class DiscoverSearchViewModel(context: Context) : ViewModel() {
                 .setLocationBias(bounds) //.setLocationRestriction(bounds)
                 .setOrigin(location.value)
                 .setTypeFilter(TypeFilter.CITIES)
-                .setTypeFilter(TypeFilter.ADDRESS)
                 .setSessionToken(token)
                 .setQuery(query.value)
                 .build()

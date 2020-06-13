@@ -33,6 +33,7 @@ class DiscoverFragment : Fragment() {
             it.findNavController()
                 .navigate(R.id.action_navigation_discover_to_navigation_discover_search)
         }
+
         return binding.root
     }
 }

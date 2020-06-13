@@ -74,16 +74,7 @@ class DiscoverSearchFragment : Fragment() {
                 )
             )
         ) // Menu close icon
-        binding.micSearchPlaces.setOnClickListener {
 
-            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-
-            try {
-                //Start the Activity and wait for the response//
-                startActivityForResult(intent, REQUEST_CODE)
-            } catch (a: ActivityNotFoundException) {
-            }
-        }
         // Create a new token for the autocomplete session. Pass this to FindAutocompletePredictionsRequest,
         // and once again when the user makes a selection (for example when calling fetchPlace()).
 
@@ -117,6 +108,26 @@ class DiscoverSearchFragment : Fragment() {
         discoverSearchViewModel.places.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it?.toMutableList())
             Log.i("DiscoverSearch", it.toString())
+        })
+        discoverSearchViewModel.query.observe(viewLifecycleOwner, Observer { query ->
+            if (query.isBlank()) {
+                binding.micSearchPlaces.setImageResource(R.drawable.ic_mic_black_24dp)
+                binding.micSearchPlaces.setOnClickListener {
+
+                    val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+
+                    try {
+                        //Start the Activity and wait for the response//
+                        startActivityForResult(intent, REQUEST_CODE)
+                    } catch (a: ActivityNotFoundException) {
+                    }
+                }
+            } else {
+                binding.micSearchPlaces.setImageResource(R.drawable.ic_close_black_24dp)
+                binding.micSearchPlaces.setOnClickListener {
+                    setDiscoverSearchText("")
+                }
+            }
         })
         setHasOptionsMenu(true)
         return binding.root

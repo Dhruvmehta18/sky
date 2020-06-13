@@ -29,14 +29,11 @@ object PlaceContent {
     fun setItems(autocompletePredictions: MutableList<AutocompletePrediction>): MutableList<PlaceItem> {
         removeAllItem()
         for (prediction in autocompletePredictions) {
-//            Log.i(TAG, prediction.placeId)
-//            Log.i(TAG, prediction.getPrimaryText(null).toString())
-//            Log.i(TAG, prediction.placeTypes.toString())
             addItem(
                 PlaceItem(
                     prediction.placeId,
                     prediction.getPrimaryText(null).toString(),
-                    prediction.getSecondaryText(null).toString()
+                    prediction.getFullText(null).toString()
                 )
             )
         }

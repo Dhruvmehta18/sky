@@ -17,6 +17,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:theme="@style/ThemeOverlay.App.Search"
             tools:context=".ui.discover.DiscoverFragment">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -31,7 +32,6 @@
                         android:id="@+id/toolbar_discover"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:theme="@style/ThemeOverlay.App.Toolbar"
                         app:contentInsetStart="0dp"
                         app:navigationIcon="@drawable/quantum_ic_arrow_back_grey600_24">
 
@@ -97,6 +97,27 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                <com.google.android.material.tabs.TabLayout
+                        android:id="@+id/tabsDiscoverSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/places" />
+
+                    <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hotel" />
+
+                    <com.google.android.material.tabs.TabItem
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/things_to_do" />
+
+                </com.google.android.material.tabs.TabLayout>
                 <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/places_autocomplete_list"
                         android:name="com.example.sky.ui.discover.DiscoverSearchFragment"

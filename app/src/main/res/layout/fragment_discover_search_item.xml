@@ -16,26 +16,40 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="74dp"
+            android:background="@color/white"
             android:onClick="@{() -> clickListener.onClick(place)}"
             android:orientation="horizontal">
+
+        <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="24dp"
+                android:layout_height="0dp"
+                android:layout_margin="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_location_on_black_24dp" />
 
         <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/primaryText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:drawableStart="@drawable/ic_search_black_24dp"
-                android:drawablePadding="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/text_margin"
+                android:layout_marginEnd="16dp"
                 android:text="@{place.placeName}"
                 android:textAppearance="?attr/textAppearanceListItem"
                 android:textColor="@color/quantum_grey900"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/showPredictionIcon"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="New York city, New York" />
 
@@ -43,25 +57,32 @@
                 android:id="@+id/secondaryText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
+                android:layout_marginStart="16dp"
                 android:text="@{place.placeSecondaryText}"
                 android:textAppearance="?attr/textAppearanceListItemSecondary"
                 android:textColor="@color/quantum_grey900"
-                app:layout_constraintEnd_toEndOf="@+id/primaryText"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/showPredictionIcon"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toBottomOf="@+id/primaryText"
+                app:layout_constraintVertical_bias="0.13"
                 tools:text="New York city, New York, USA" />
 
         <ImageView
                 android:id="@+id/showPredictionIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:contentDescription="@{@string/predictions_for(place.placeName)}"
                 android:onClick="@{() -> clickListener.onPredictionIcon(place)}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_arrow_rotate_forward_black_24dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
